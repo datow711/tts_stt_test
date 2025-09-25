@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TTS & STT 測試頁</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>TTS & STT 測試頁</h1>
+        <nav>
+            <div class="mode-switch">
+                <button id="tts-mode-btn" class="mode-btn active" data-mode="tts">TTS 模式</button>
+                <button id="stt-mode-btn" class="mode-btn" data-mode="stt">STT 模式</button>
+            </div>
+            <div class="rime-filter">
+                <label for="rime-filter-input">篩選韻母組:</label>
+                <input type="text" id="rime-filter-input" placeholder="例如: a, an, ang...">
+                <select id="rime-select"></select>
+            </div>
+            <div class="view-switch">
+                <span id="current-view"></span>
+            </div>
+            <div class="actions">
+                <button id="admin-login-btn">後台登入</button>
+                <button id="export-json-btn">匯出 JSON</button>
+                <button id="export-csv-btn">匯出 CSV</button>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <div id="password-modal" class="modal">
+            <div class="modal-content">
+                <h2>請輸入後台密碼</h2>
+                <input type="password" id="password-input">
+                <button id="password-submit">送出</button>
+                <p id="password-error" class="error-msg"></p>
+            </div>
+        </div>
+        <div id="grid-container">
+            <!-- 表格將由 JavaScript 動態生成 -->
+        </div>
+        <div id="stt-result-modal" class="modal">
+            <div class="modal-content">
+                <h2>STT 辨識結果</h2>
+                <p id="stt-result-text"></p>
+                <button id="stt-result-close">關閉</button>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/db.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

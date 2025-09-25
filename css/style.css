@@ -1,0 +1,212 @@
+/* --- 基本設定 --- */
+:root {
+    --primary-color: #22C55E; /* 綠色 */
+    --danger-color: #EF4444;  /* 紅色 */
+    --disabled-color: #9CA3AF;/* 灰色 */
+    --background-color: #FFFFFF;
+    --text-color: #1F2937;
+    --border-color: #E5E7EB;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+/* --- 標頭與導覽 --- */
+header {
+    background-color: #F9FAFB;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.mode-switch button, .actions button {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: #fff;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.mode-switch button.active {
+    background-color: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+}
+
+.actions button:hover {
+    background-color: #F3F4F6;
+}
+
+/* --- 韻母組篩選器 --- */
+.rime-filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rime-filter label {
+    font-size: 0.9rem;
+}
+
+.rime-filter input[type="text"],
+.rime-filter select {
+    padding: 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* --- 主內容與表格 --- */
+main {
+    padding: 2rem;
+}
+
+#grid-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+    text-align: center;
+}
+
+th, td {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    min-width: 80px;
+}
+
+/* 縮小前三欄寬度 */
+th:nth-child(-n+3),
+td:nth-child(-n+3) {
+    min-width: 40px;
+    width: 5%;
+}
+
+th {
+    background-color: #F3F4F6;
+}
+
+/* --- Cell 狀態 --- */
+.cell-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.syllable {
+    font-weight: bold;
+}
+
+.status-marker {
+    width: 100%;
+    padding: 0.2rem;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 0.8rem;
+    background-color: var(--disabled-color); /* 未測試 */
+}
+
+.status-marker.tested-o {
+    background-color: var(--primary-color);
+}
+
+.status-marker.tested-x {
+    background-color: var(--danger-color);
+}
+
+.status-marker.admin-mode {
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.status-marker.admin-mode:hover {
+    transform: scale(1.1);
+}
+
+.cell-actions button {
+    padding: 0.3rem 0.6rem;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    background-color: var(--primary-color);
+    cursor: pointer;
+}
+
+.cell-actions button:disabled {
+    background-color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+.cell-actions .record-btn.recording {
+    background-color: var(--danger-color);
+}
+
+/* --- 密碼與結果彈窗 --- */
+.modal {
+    display: none; /* 預設隱藏 */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 400px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.modal-content input {
+    width: calc(100% - 40px);
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.modal-content button {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.error-msg {
+    color: var(--danger-color);
+    font-size: 0.9rem;
+    height: 1.2rem;
+}
