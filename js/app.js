@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.view = (view === 'admin') ? 'admin' : 'results';
 
         updateActiveModeButtons();
+        updateAdminButton(); // Update button text and behavior
 
         // Centralized logic to decide what to show
         if (state.view === 'admin' && !state.isAuthenticated) {
@@ -141,6 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('current-view').textContent = `模式: ${state.mode.toUpperCase()} / 視圖: ${state.view.toUpperCase()}`;
     }
 
+    function updateAdminButton() {
+        if (state.isAuthenticated && state.view === 'admin') {
+            adminLoginBtn.textContent = '回結果頁';
+        } else {
+            adminLoginBtn.textContent = '後台登入';
+        }
+    }
+
     // --- Event Listeners ---
     function addEventListeners() {
         window.addEventListener('hashchange', handleRouting);
@@ -163,7 +172,11 @@ document.addEventListener('DOMContentLoaded', () => {
         sttModeBtn.addEventListener('click', () => window.location.hash = `#/stt/${state.view}`);
 
         adminLoginBtn.addEventListener('click', () => {
-            window.location.hash = `#/tts/admin`;
+            if (state.isAuthenticated && state.view === 'admin') {
+                window.location.hash = `#/tts/results`;
+            } else {
+                window.location.hash = `#/tts/admin`;
+            }
         });
 
         exportJsonBtn.addEventListener('click', exportResultsAsJSON);
