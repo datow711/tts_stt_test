@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
         audioChunks: [],
         rimeGroups: [],
         currentRimeGroup: null,
+        initials: [],
+        currentInitial: 'all', // Default to 'all'
     };
 
     // --- DOM Elements ---
@@ -16,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sttModeBtn = document.getElementById('stt-mode-btn');
     const rimeFilterInput = document.getElementById('rime-filter-input');
     const rimeSelect = document.getElementById('rime-select');
+    const initialSelect = document.getElementById('initial-select');
     const passwordInput = document.getElementById('password-input');
     const passwordSubmit = document.getElementById('password-submit');
     const passwordError = document.getElementById('password-error');
@@ -30,6 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.results = await loadAllData();
         await loadGridData();
         setupRimeFilter();
+        setupInitialFilter();
         addEventListeners();
         handleRouting(); // First route handling and render
     }
@@ -82,6 +86,11 @@ document.addEventListener('DOMContentLoaded', () => {
             state.rimeGroups = [...new Set(data.map(item => item.rime_group))];
             state.currentRimeGroup = state.rimeGroups[0] || null;
 
+            // Extract and sort initials
+            const uniqueInitials = [...new Set(data.map(item => item.initial))];
+            uniqueInitials.sort((a, b) => initialOrder.indexOf(a) - initialOrder.indexOf(b));
+            state.initials = ['all', ...uniqueInitials]; // Add 'all' option
+
         } catch (error) {
             console.error('Failed to load grid data:', error);
         }
@@ -100,6 +109,22 @@ document.addEventListener('DOMContentLoaded', () => {
             option.value = group;
             option.textContent = group;
             rimeSelect.appendChild(option);
+        });
+    }
+
+    // --- Initial Filter ---
+    function setupInitialFilter() {
+        updateInitialSelectOptions(state.initials);
+        initialSelect.value = state.currentInitial;
+    }
+
+    function updateInitialSelectOptions(initials) {
+        initialSelect.innerHTML = '';
+        initials.forEach(initial => {
+            const option = document.createElement('option');
+            option.value = initial;
+            option.textContent = initial === 'all' ? '全部' : initial;
+            initialSelect.appendChild(option);
         });
     }
 
@@ -126,7 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Rendering ---
     function renderApp() {
-        const filteredData = state.data.filter(item => item.rime_group === state.currentRimeGroup);
+        const filteredData = state.data.filter(item => {
+            const rimeMatch = item.rime_group === state.currentRimeGroup;
+            const initialMatch = state.currentInitial === 'all' || item.initial === state.currentInitial;
+            return rimeMatch && initialMatch;
+        });
         renderGrid(filteredData, state.results, state);
         addGridActionListeners();
     }
@@ -162,6 +191,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         rimeSelect.addEventListener('change', (e) => {
             state.currentRimeGroup = e.target.value;
+            renderApp();
+        });
+
+        initialSelect.addEventListener('change', (e) => {
+            state.currentInitial = e.target.value;
             renderApp();
         });
 
