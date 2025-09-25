@@ -254,6 +254,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const audioSrc = await callTTS(syllable);
             const audio = new Audio(audioSrc);
 
+            // Only try to play when the browser thinks it can play through without stopping
+            audio.oncanplaythrough = () => {
+                audio.play();
+            };
+
             audio.onplaying = () => {
                 button.textContent = '播放中...';
             };
@@ -269,8 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 button.textContent = '播放';
                 alert('播放失敗，請檢查網路連線或 API 狀態。');
             };
-
-            audio.play();
 
         } catch (error) {
             console.error('TTS API call failed:', error);
