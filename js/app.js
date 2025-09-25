@@ -293,54 +293,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let playbackTimeout = null;
 
-        const cleanup = (success = true) => {
-            if (playbackTimeout) {
-                clearTimeout(playbackTimeout);
-            }
+        // This cleanup function is now only for resetting the button state
+        const resetButton = () => {
+            clearTimeout(playbackTimeout);
             button.disabled = false;
             button.textContent = '播放';
-            if (!success) {
-                alert('播放失敗，請檢查網路連線或 API 狀態。');
-            }
         };
 
         try {
             const audioSrc = await callTTS(syllable);
             const audio = new Audio(audioSrc);
 
-            // Set a timeout to catch cases where the audio never starts playing.
+            // The timeout is the ONLY source of truth for playback failure.
             playbackTimeout = setTimeout(() => {
                 console.error('Playback timeout: Audio did not start playing within 5 seconds.');
-                cleanup(false);
+                alert('播放失敗，請檢查網路連線或 API 狀態。');
+                resetButton();
             }, 5000);
 
-            audio.oncanplaythrough = () => {
-                audio.play().catch(err => {
-                    console.error('audio.play() promise was rejected:', err);
-                    cleanup(false);
-                });
-            };
-
+            // onplaying is the ONLY source of truth for playback success.
             audio.onplaying = () => {
-                // Success! Playback has started. Clear the timeout.
-                clearTimeout(playbackTimeout);
-                playbackTimeout = null; // Mark as cleared
+                clearTimeout(playbackTimeout); // Success! Cancel the failure timer.
                 button.textContent = '播放中...';
             };
 
             audio.onended = () => {
-                cleanup(true);
+                resetButton();
             };
 
-            // The key change: onerror no longer shows a user-facing alert.
-            // The timeout is now the single source of truth for playback failure.
+            // Browser errors are now for debugging ONLY. They DO NOT trigger user alerts.
             audio.onerror = (e) => {
-                console.error('An audio error event was fired:', e);
+                console.warn('An audio.onerror event was fired, but is being ignored by the timeout logic.', e);
             };
+
+            audio.play().catch(err => {
+                console.warn('audio.play() promise was rejected, but is being ignored by the timeout logic.', err);
+            });
 
         } catch (error) {
+            // This is a genuine API or network error, so we should alert the user immediately.
             console.error('TTS API call failed:', error);
-            cleanup(false);
+            // Provide a more specific error message to the user.
+            alert(`播放失敗：${error.message}`);
+            resetButton();
         }
     }
 

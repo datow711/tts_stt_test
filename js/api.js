@@ -3,7 +3,7 @@
 const TTS_API_URL = 'https://dev.taigiedu.com/backend/synthesize_speech';
 const STT_API_URL = 'https://dev.taigiedu.com/backend/transcribe_speech';
 
-async function callTTS(text) {
+async function callTTS(text, retries = 3, delay = 300) {
     try {
         const response = await fetch(TTS_API_URL, {
             method: 'POST',
@@ -16,6 +16,13 @@ async function callTTS(text) {
             }),
         });
         if (!response.ok) {
+            // If the response is not OK, and we still have retries left, then retry.
+            if (retries > 1) {
+                console.warn(`TTS API call failed with status ${response.status}. Retrying in ${delay}ms...`);
+                await new Promise(resolve => setTimeout(resolve, delay));
+                return callTTS(text, retries - 1, delay * 2); // Exponential backoff
+            }
+            // If no retries left, throw the final error.
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const base64Audio = await response.text();
