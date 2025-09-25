@@ -43,7 +43,7 @@ function renderGrid(data, results, state) {
 
     // 建立表頭
     const headerRow = document.createElement('tr');
-    const headers = ['韻母組', '聲母', '基底', 'T1', 'T2', 'T3', 'T4', 'T5', 'T7', 'T8', 'T9'];
+    const headers = ['韻母組', '聲母', '基底', '第1調', '第2調', '第3調', '第4調', '第5調', '第7調', '第8調', '第9調'];
     headers.forEach(text => {
         const th = document.createElement('th');
         th.textContent = text;

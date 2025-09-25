@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         mediaRecorder: null,
         audioChunks: [],
         rimeGroups: [],
-        currentRimeGroup: null,
+        currentRimeGroup: 'all', // Default to 'all'
         initials: [],
         currentInitial: 'all', // Default to 'all'
     };
@@ -82,8 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             state.data = data;
-            state.rimeGroups = [...new Set(data.map(item => item.rime_group))];
-            state.currentRimeGroup = state.rimeGroups[0] || null;
+            const uniqueRimeGroups = [...new Set(data.map(item => item.rime_group))];
+            state.rimeGroups = ['all', ...uniqueRimeGroups]; // Add 'all' option
+            // state.currentRimeGroup is already defaulted to 'all'
 
             // Extract and sort initials
             const uniqueInitials = [...new Set(data.map(item => item.initial))];
@@ -106,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         groups.forEach(group => {
             const option = document.createElement('option');
             option.value = group;
-            option.textContent = group;
+            option.textContent = group === 'all' ? '全部' : group;
             rimeSelect.appendChild(option);
         });
     }
@@ -122,7 +123,13 @@ document.addEventListener('DOMContentLoaded', () => {
         initials.forEach(initial => {
             const option = document.createElement('option');
             option.value = initial;
-            option.textContent = initial === 'all' ? '全部' : initial;
+            if (initial === 'all') {
+                option.textContent = '全部';
+            } else if (initial === '') {
+                option.textContent = '無聲母';
+            } else {
+                option.textContent = initial;
+            }
             initialSelect.appendChild(option);
         });
     }
@@ -151,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Rendering ---
     function renderApp() {
         const filteredData = state.data.filter(item => {
-            const rimeMatch = item.rime_group === state.currentRimeGroup;
+            const rimeMatch = state.currentRimeGroup === 'all' || item.rime_group === state.currentRimeGroup;
             const initialMatch = state.currentInitial === 'all' || item.initial === state.currentInitial;
             return rimeMatch && initialMatch;
         });

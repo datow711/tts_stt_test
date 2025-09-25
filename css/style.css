@@ -59,19 +59,22 @@ nav {
     background-color: #F3F4F6;
 }
 
-/* --- 韻母組篩選器 --- */
-.rime-filter {
+/* --- Filter Styles --- */
+.rime-filter,
+.initial-filter {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    flex-direction: column;
 }
 
-.rime-filter label {
+.rime-filter label,
+.initial-filter label {
     font-size: 0.9rem;
+    margin-bottom: 0.25rem; /* Add some space below the label */
 }
 
 .rime-filter input[type="text"],
-.rime-filter select {
+.rime-filter select,
+.initial-filter select {
     padding: 0.4rem;
     border: 1px solid var(--border-color);
     border-radius: 6px;
