@@ -190,7 +190,16 @@ document.addEventListener('DOMContentLoaded', () => {
             // Handle status marking in admin mode
             if (state.view === 'admin' && target.classList.contains('status-marker')) {
                 const currentStatus = state.results.find(r => r.id === cellId)?.status;
-                const newStatus = currentStatus === 'o' ? 'x' : 'o';
+                let newStatus;
+
+                if (currentStatus === 'o') {
+                    newStatus = 'x'; // O -> X
+                } else if (currentStatus === 'x') {
+                    newStatus = null; // X -> 未測試 (null)
+                } else {
+                    newStatus = 'o'; // 未測試 -> O
+                }
+                
                 await updateResult(cellId, newStatus);
             }
             
@@ -309,12 +318,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function updateResult(cellId, newStatus) {
         const resultIndex = state.results.findIndex(r => r.id === cellId);
-        if (resultIndex > -1) {
-            state.results[resultIndex].status = newStatus;
+
+        if (newStatus === null) {
+            // If new status is 'untested', remove it from the state and DB
+            if (resultIndex > -1) {
+                state.results.splice(resultIndex, 1);
+            }
+            await deleteData(cellId);
         } else {
-            state.results.push({ id: cellId, status: newStatus });
+            // Otherwise, update or add the result
+            if (resultIndex > -1) {
+                state.results[resultIndex].status = newStatus;
+            } else {
+                state.results.push({ id: cellId, status: newStatus });
+            }
+            await saveData({ id: cellId, status: newStatus });
         }
-        await saveData({ id: cellId, status: newStatus });
+
         updateCellStatus(cellId, newStatus);
     }
 

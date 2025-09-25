@@ -45,6 +45,21 @@ function saveData(data) {
     });
 }
 
+function deleteData(id) {
+    return new Promise((resolve, reject) => {
+        if (!db) {
+            reject('DB not initialized');
+            return;
+        }
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const request = store.delete(id);
+
+        request.onsuccess = () => resolve();
+        request.onerror = (event) => reject('Error deleting data:', event.target.error);
+    });
+}
+
 function loadAllData() {
     return new Promise((resolve, reject) => {
         if (!db) {

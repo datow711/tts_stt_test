@@ -115,8 +115,19 @@ function renderGrid(data, results, state) {
 function updateCellStatus(cellId, status) {
     const marker = document.querySelector(`.status-marker[data-id="${cellId}"]`);
     if (marker) {
-        marker.textContent = status === 'o' ? 'O' : 'X';
-        marker.className = `status-marker tested-${status}`;
+        // Reset classes first, keeping the base classes
+        const isAdmin = marker.classList.contains('admin-mode');
+        marker.className = 'status-marker' + (isAdmin ? ' admin-mode' : '');
+
+        if (status === 'o') {
+            marker.textContent = 'O';
+            marker.classList.add('tested-o');
+        } else if (status === 'x') {
+            marker.textContent = 'X';
+            marker.classList.add('tested-x');
+        } else {
+            marker.textContent = '未測試';
+        }
     }
 }
 
