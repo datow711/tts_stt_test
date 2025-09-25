@@ -1,10 +1,10 @@
 // js/db.js
 
-// The 'supabase' object is now globally available thanks to supabaseClient.js
+// The 'supabaseClient' object is now globally available thanks to supabaseClient.js
 
 async function loadAllData() {
     try {
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('results')
             .select('cell_id, status');
 
@@ -32,7 +32,7 @@ async function saveData(result) {
         // It will INSERT a new row if it doesn't exist,
         // or UPDATE the existing one if it does.
         // We need to tell it that 'cell_id' is the column to check for conflicts.
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('results')
             .upsert({ 
                 cell_id: result.id, 
@@ -52,7 +52,7 @@ async function saveData(result) {
 
 async function deleteData(cellId) {
     try {
-        const { error } = await supabase
+        const { error } = await supabaseClient
             .from('results')
             .delete()
             .eq('cell_id', cellId);
@@ -66,9 +66,7 @@ async function deleteData(cellId) {
     }
 }
 
-// The initDB function is no longer needed as Supabase handles its own initialization.
-// We'll keep an empty function here to avoid breaking the call in app.js for now.
+// The initDB function is no longer needed.
 function initDB() {
-    // This function is now obsolete.
     console.log("Using Supabase. No local DB initialization needed.");
 }
