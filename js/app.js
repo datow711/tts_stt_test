@@ -233,17 +233,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function handleTTSPlay(syllable, button) {
         button.disabled = true;
-        button.textContent = '播放中...';
+        button.textContent = '載入中...';
         try {
             const audioSrc = await callTTS(syllable);
             const audio = new Audio(audioSrc);
-            audio.play();
+
+            audio.onplaying = () => {
+                button.textContent = '播放中...';
+            };
+
             audio.onended = () => {
                 button.disabled = false;
                 button.textContent = '播放';
             };
+
+            audio.onerror = () => {
+                console.error('Audio playback failed.');
+                button.disabled = false;
+                button.textContent = '播放';
+                alert('播放失敗，請檢查網路連線或 API 狀態。');
+            };
+
+            audio.play();
+
         } catch (error) {
-            console.error('TTS 播放失敗', error);
+            console.error('TTS API call failed:', error);
             button.disabled = false;
             button.textContent = '播放';
             alert('播放失敗，請檢查網路連線或 API 狀態。');
