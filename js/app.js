@@ -112,13 +112,12 @@ document.addEventListener('DOMContentLoaded', () => {
         state.mode = (mode === 'stt') ? 'stt' : 'tts';
         
         if (view === 'admin') {
-            if (state.isAuthenticated) {
-                state.view = 'admin';
-            } else {
+            // 立即將 state.view 設為 'admin'，與 URL 同步
+            state.view = 'admin';
+            if (!state.isAuthenticated) {
                 showPasswordModal();
             }
-        }
-        else {
+        } else {
             state.view = 'results';
             hidePasswordModal();
         }
