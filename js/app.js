@@ -30,9 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
         state.results = await loadAllData();
         await loadGridData();
         setupRimeFilter();
-        handleRouting();
         addEventListeners();
-        renderApp();
+        handleRouting(); // First route handling and render
     }
 
     // --- Data Loading ---
@@ -110,18 +109,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const [_, mode, view] = hash.split('/');
 
         state.mode = (mode === 'stt') ? 'stt' : 'tts';
-        
-        if (view === 'admin') {
-            // 立即將 state.view 設為 'admin'，與 URL 同步
-            state.view = 'admin';
-            if (!state.isAuthenticated) {
-                showPasswordModal();
-            }
-        } else {
-            state.view = 'results';
-            hidePasswordModal();
-        }
+        state.view = (view === 'admin') ? 'admin' : 'results';
+
         updateActiveModeButtons();
+
+        // Centralized logic to decide what to show
+        if (state.view === 'admin' && !state.isAuthenticated) {
+            showPasswordModal();
+            // Do not render the main app, just show the modal over the existing view
+        } else {
+            hidePasswordModal();
+            renderApp(); // Render the correct view (results page or authenticated admin page)
+        }
     }
 
     // --- Rendering ---
@@ -144,10 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
     function addEventListeners() {
-        window.addEventListener('hashchange', () => {
-            handleRouting();
-            renderApp();
-        });
+        window.addEventListener('hashchange', handleRouting);
 
         rimeFilterInput.addEventListener('input', (e) => {
             const filterText = e.target.value.toLowerCase();
@@ -167,7 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sttModeBtn.addEventListener('click', () => window.location.hash = `#/stt/${state.view}`);
 
         adminLoginBtn.addEventListener('click', () => {
-            window.location.hash = `/#/${state.mode}/admin`;
+            window.location.hash = `#/tts/admin`;
         });
 
         exportJsonBtn.addEventListener('click', exportResultsAsJSON);
@@ -219,10 +215,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
                 if (hexHash === passHash) {
                     state.isAuthenticated = true;
-                    state.view = 'admin';
-                    hidePasswordModal();
-                    window.location.hash = `/#/${state.mode}/admin`;
-                    renderApp();
+                    passwordInput.value = ''; // Clear password field
+                    passwordError.textContent = '';
+                    // After successful login, re-run the routing logic.
+                    // It will see the user is authenticated and render the admin page.
+                    handleRouting();
                 } else {
                     passwordError.textContent = '密碼錯誤';
                 }
