@@ -189,18 +189,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Handle status marking in admin mode
             if (state.view === 'admin' && target.classList.contains('status-marker')) {
-                const currentStatus = state.results.find(r => r.id === cellId)?.status;
-                let newStatus;
-
-                if (currentStatus === 'o') {
-                    newStatus = 'x'; // O -> X
-                } else if (currentStatus === 'x') {
-                    newStatus = 'na'; // X -> 不存在
-                } else if (currentStatus === 'na') {
-                    newStatus = null; // 不存在 -> 未測試
-                } else {
-                    newStatus = 'o'; // 未測試 -> O
-                }
+                const statusCycle = ['o', 'x', 'na', null];
+                const currentStatus = state.results.find(r => r.id === cellId)?.status ?? null;
+                
+                const currentIndex = statusCycle.indexOf(currentStatus);
+                const nextIndex = (currentIndex + 1) % statusCycle.length;
+                const newStatus = statusCycle[nextIndex];
                 
                 await updateResult(cellId, newStatus);
             }
