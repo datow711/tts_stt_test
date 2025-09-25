@@ -9,7 +9,7 @@ async function loadAllData() {
             .select('cell_id, status');
 
         if (error) {
-            console.error('Error loading data from Supabase:', error);
+            console.error('Supabase loadAllData error:', JSON.stringify(error, null, 2));
             throw error;
         }
 
