@@ -233,11 +233,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
                 if (hexHash === passHash) {
                     state.isAuthenticated = true;
-                    passwordInput.value = ''; // Clear password field
+                    passwordInput.value = '';
                     passwordError.textContent = '';
-                    // After successful login, re-run the routing logic.
-                    // It will see the user is authenticated and render the admin page.
-                    handleRouting();
+                    // After successful login, set the hash to the admin view.
+                    // This will trigger handleRouting via the 'hashchange' event,
+                    // ensuring a clean state transition.
+                    window.location.hash = `#/tts/admin`;
                 } else {
                     passwordError.textContent = '密碼錯誤';
                 }
