@@ -3,6 +3,7 @@
     --primary-color: #22C55E; /* 綠色 */
     --danger-color: #EF4444;  /* 紅色 */
     --disabled-color: #9CA3AF;/* 灰色 */
+    --non-existent-color: #8B5CF6; /* 紫色 */
     --background-color: #FFFFFF;
     --text-color: #1F2937;
     --border-color: #E5E7EB;
@@ -137,6 +138,10 @@ th {
 
 .status-marker.tested-x {
     background-color: var(--danger-color);
+}
+
+.status-marker.tested-na {
+    background-color: var(--non-existent-color);
 }
 
 .status-marker.admin-mode {

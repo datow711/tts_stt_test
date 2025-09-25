@@ -195,7 +195,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (currentStatus === 'o') {
                     newStatus = 'x'; // O -> X
                 } else if (currentStatus === 'x') {
-                    newStatus = null; // X -> 未測試 (null)
+                    newStatus = 'na'; // X -> 不存在
+                } else if (currentStatus === 'na') {
+                    newStatus = null; // 不存在 -> 未測試
                 } else {
                     newStatus = 'o'; // 未測試 -> O
                 }

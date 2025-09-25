@@ -92,9 +92,9 @@ function renderGrid(data, results, state) {
                         <div 
                             class="status-marker ${result ? `tested-${result}` : ''} ${isAdmin ? 'admin-mode' : ''}" 
                             data-id="${cellId}"
-                            title="${isAdmin ? '點擊切換 O/X' : '測試結果'}"
+                            title="${isAdmin ? '點擊切換狀態' : '測試結果'}"
                         >
-                            ${result ? (result === 'o' ? 'O' : 'X') : '未測試'}
+                            ${result === 'o' ? 'O' : (result === 'x' ? 'X' : (result === 'na' ? '不存在' : '未測試'))}
                         </div>
                     </div>
                 `;
@@ -125,6 +125,9 @@ function updateCellStatus(cellId, status) {
         } else if (status === 'x') {
             marker.textContent = 'X';
             marker.classList.add('tested-x');
+        } else if (status === 'na') {
+            marker.textContent = '不存在';
+            marker.classList.add('tested-na');
         } else {
             marker.textContent = '未測試';
         }
