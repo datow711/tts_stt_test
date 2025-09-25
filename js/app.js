@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initialization ---
     async function initialize() {
-        await initDB();
         state.results = await loadAllData();
         await loadGridData();
         setupRimeFilter();
