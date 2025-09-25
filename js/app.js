@@ -235,10 +235,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     state.isAuthenticated = true;
                     passwordInput.value = '';
                     passwordError.textContent = '';
-                    // After successful login, set the hash to the admin view.
-                    // This will trigger handleRouting via the 'hashchange' event,
-                    // ensuring a clean state transition.
-                    window.location.hash = `#/tts/admin`;
+
+                    // Now that we are authenticated, manually update the UI.
+                    // This is more reliable than re-triggering the router.
+                    hidePasswordModal();
+                    updateAdminButton();
+                    renderApp();
                 } else {
                     passwordError.textContent = '密碼錯誤';
                 }
