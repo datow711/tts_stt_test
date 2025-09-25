@@ -284,36 +284,57 @@ document.addEventListener('DOMContentLoaded', () => {
     async function handleTTSPlay(syllable, button) {
         button.disabled = true;
         button.textContent = '載入中...';
+
+        let playbackTimeout = null;
+
+        const cleanup = (success = true) => {
+            if (playbackTimeout) {
+                clearTimeout(playbackTimeout);
+            }
+            button.disabled = false;
+            button.textContent = '播放';
+            if (!success) {
+                alert('播放失敗，請檢查網路連線或 API 狀態。');
+            }
+        };
+
         try {
             const audioSrc = await callTTS(syllable);
             const audio = new Audio(audioSrc);
 
-            // Only try to play when the browser thinks it can play through without stopping
+            // Set a timeout to catch cases where the audio never starts playing.
+            playbackTimeout = setTimeout(() => {
+                console.error('Playback timeout: Audio did not start playing within 5 seconds.');
+                cleanup(false);
+            }, 5000);
+
             audio.oncanplaythrough = () => {
-                audio.play();
+                audio.play().catch(err => {
+                    console.error('audio.play() promise was rejected:', err);
+                    cleanup(false);
+                });
             };
 
             audio.onplaying = () => {
+                // Success! Playback has started. Clear the timeout.
+                clearTimeout(playbackTimeout);
+                playbackTimeout = null; // Mark as cleared
                 button.textContent = '播放中...';
             };
 
             audio.onended = () => {
-                button.disabled = false;
-                button.textContent = '播放';
+                cleanup(true);
             };
 
-            audio.onerror = () => {
-                console.error('Audio playback failed.');
-                button.disabled = false;
-                button.textContent = '播放';
-                alert('播放失敗，請檢查網路連線或 API 狀態。');
+            // The key change: onerror no longer shows a user-facing alert.
+            // The timeout is now the single source of truth for playback failure.
+            audio.onerror = (e) => {
+                console.error('An audio error event was fired:', e);
             };
 
         } catch (error) {
             console.error('TTS API call failed:', error);
-            button.disabled = false;
-            button.textContent = '播放';
-            alert('播放失敗，請檢查網路連線或 API 狀態。');
+            cleanup(false);
         }
     }
 
