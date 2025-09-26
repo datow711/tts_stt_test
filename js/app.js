@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
         setupRimeFilter();
         setupInitialFilter();
         addEventListeners();
+        addGridActionListeners(); // Moved here
         handleRouting(); // First route handling and render
     }
 
@@ -163,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return rimeMatch && initialMatch;
         });
         renderGrid(filteredData, state.results, state);
-        addGridActionListeners();
     }
 
     function updateActiveModeButtons() {
