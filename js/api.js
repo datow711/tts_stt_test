@@ -1,6 +1,6 @@
 // js/api.js
 
-async function callTTS(text, apiUrl, retries = 3, delay = 300) {
+async function callTTS(text, apiUrl, retries = 3, delay = 150) {
     try {
         const response = await fetch(apiUrl, {
             method: 'POST',
