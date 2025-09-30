@@ -28,6 +28,13 @@
             <div class="view-switch">
                 <span id="current-view"></span>
             </div>
+            <div class="api-endpoint-selector">
+                <label>TTS API 端點:</label>
+                <input type="radio" id="api-taigiedu" name="tts-api" value="https://dev.taigiedu.com/backend/synthesize_speech" checked>
+                <label for="api-taigiedu">TaigiEdu</label>
+                <input type="radio" id="api-ncku" name="tts-api" value="https://140.116.245.147:1010/synthesize_speech">
+                <label for="api-ncku">NCKU</label>
+            </div>
             <div class="actions">
                 <button id="admin-login-btn">後台登入</button>
                 <button id="export-json-btn">匯出 JSON</button>

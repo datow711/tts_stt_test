@@ -301,7 +301,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const audioSrc = await callTTS(syllable);
+            const selectedApiUrl = document.querySelector('input[name="tts-api"]:checked').value;
+            const audioSrc = await callTTS(syllable, selectedApiUrl);
             const audio = new Audio(audioSrc);
 
             // The timeout is the ONLY source of truth for playback failure.
